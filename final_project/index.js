@@ -10,9 +10,14 @@ app.use(express.json());
 
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
-app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
+app.use("/customer/auth/*", function auth(req, res, next) {
+    if (!req.session || !req.session.user) {
+        return res.status(401).json({ message: "Access Denied. Please log in." });
+    }
+    
+    next(); // User is authenticated, proceed to the next middleware/route
 });
+
  
 const PORT =5000;
 
